@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Disparo de Mensagem WhatsApp</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #25D366;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #128C7E;
+    }
+  </style>
+</head>
+<body>
+  <h1>Enviar mensagem no WhatsApp</h1>
+  <form id="formulario">
+    <input type="text" id="numero" placeholder="Números separados por vírgula (ex: 5511999999999,5521999999999)" required />
+    <textarea id="mensagem" placeholder="Digite a mensagem" required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('formulario');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const numeroInput = document.getElementById('numero').value;
+      const mensagem = document.getElementById('mensagem').value;
+
+      // Quebra a string por vírgulas, remove espaços e forma um array
+      const numeros = numeroInput.split(',').map(n => n.trim()).filter(n => n);
+
+      try {
+        const resposta = await fetch('http://localhost:3000/disparar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ numeros, mensagem })
+        });
+
+        const resultado = await resposta.json();
+        alert(resultado.status || 'Mensagem enviada!');
+      } catch (erro) {
+        alert('Erro ao enviar mensagem!');
+        console.error(erro);
+      }
+    });
+  </script>
+</body>
+</html>
